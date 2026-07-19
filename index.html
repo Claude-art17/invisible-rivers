@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invisible Rivers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200;300;400&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, "Noto Serif SC", "Source Han Serif SC", "SimSun", "STSong", serif;
+    background: #222 url('bg.jpg') center/cover no-repeat;
+    background-attachment: fixed;
+    color: #2c3a42;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── 河流底纹 ── */
+  .river-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .river-bg svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.12;
+  }
+  .wave-path {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 0.8;
+    opacity: 0.5;
+  }
+  .wave-path-thick {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    opacity: 0.35;
+  }
+
+  @keyframes drift1 {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-60px); }
+  }
+  @keyframes drift2 {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(40px); }
+  }
+  @keyframes drift3 {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-30px); }
+  }
+  .wave-group-1 { animation: drift1 18s linear infinite; }
+  .wave-group-2 { animation: drift2 22s linear infinite; }
+  .wave-group-3 { animation: drift3 26s linear infinite; }
+
+  /* ── 构成主义装饰 ── */
+  .geo-circle {
+    position: fixed;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .geo-circle.c1 {
+    width: 180px; height: 180px;
+    top: 6%; right: 5%;
+    opacity: 0.4;
+  }
+  .geo-circle.c2 {
+    width: 90px; height: 90px;
+    bottom: 12%; left: 8%;
+    opacity: 0.35;
+    border-width: 1px;
+  }
+  .geo-line {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .geo-line.l1 {
+    width: 120px; height: 1px;
+    background: rgba(255,255,255,0.45);
+    top: 18%; left: 10%;
+    transform: rotate(-28deg);
+    opacity: 0.5;
+  }
+  .geo-line.l2 {
+    width: 80px; height: 1px;
+    background: rgba(255,255,255,0.4);
+    bottom: 22%; right: 12%;
+    transform: rotate(35deg);
+    opacity: 0.45;
+  }
+  .geo-dot {
+    position: fixed;
+    width: 5px; height: 5px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  .geo-dot.d1 { top: 20%; right: 18%; }
+  .geo-dot.d2 { bottom: 25%; left: 20%; }
+  .geo-dot.d3 { top: 40%; left: 6%; }
+
+  /* ── 主容器 ── */
+  .container {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+    max-width: 520px;
+    width: 92%;
+    padding: 56px 48px 48px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 40px rgba(0,0,0,0.08);
+  }
+
+  /* ── 标题 ── */
+  .title {
+    font-family: 'Josefin Sans', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 34px;
+    font-weight: 200;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #000;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  /* ── 分割线 ── */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: #000;
+    margin-bottom: 36px;
+  }
+
+  /* ── 表单 ── */
+  .form-group {
+    margin-bottom: 28px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #000;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .form-group input[type="text"],
+  .form-group textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    padding: 10px 0;
+    font-family: inherit;
+    font-size: 16px;
+    color: #000;
+    outline: none;
+    transition: border-color 0.3s;
+    letter-spacing: 0.5px;
+    resize: none;
+  }
+  .form-group input[type="text"]:focus,
+  .form-group textarea:focus {
+    border-bottom-color: #000;
+  }
+  .form-group textarea {
+    height: 96px;
+    line-height: 1.6;
+  }
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: #000;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  .char-count.warn { color: #b88060; }
+
+  /* ── 图片上传 ── */
+  .file-upload-wrap {
+    position: relative;
+  }
+  .file-upload-wrap.hidden {
+    display: none;
+  }
+  .file-upload-wrap input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  .file-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px dashed #000;
+    border-radius: 2px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #000;
+  }
+  .file-label:hover {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    border-style: solid;
+  }
+  .file-label .icon {
+    font-size: 20px;
+  }
+  .file-name {
+    font-size: 12px;
+    color: #000;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-error {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #b88060;
+    margin-top: 4px;
+    display: none;
+  }
+  .photo-grid {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .photo-item {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-delete {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .photo-delete:hover {
+    background: rgba(0,0,0,0.8);
+  }
+
+  /* ── 心情按钮 ── */
+  .mood-section {
+    margin-bottom: 36px;
+  }
+  .mood-section .mood-label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #000;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .mood-row {
+    display: flex;
+    gap: 10px;
+  }
+  .mood-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    color: #000;
+    letter-spacing: 2px;
+    transition: all 0.25s;
+    text-align: center;
+  }
+  .mood-btn:hover {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+  }
+  .mood-btn.selected {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+  }
+  .mood-btn .mood-emoji {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  /* ── 提交按钮 ── */
+  .submit-btn {
+    width: 100%;
+    padding: 15px 0;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    letter-spacing: 4px;
+    color: #000;
+    transition: all 0.3s;
+  }
+  .submit-btn:hover {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+  }
+  .submit-btn:active {
+    transform: scale(0.98);
+  }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Toast ── */
+  .toast-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .toast-overlay.show {
+    opacity: 1;
+  }
+  .toast {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 2px;
+    padding: 28px 40px;
+    text-align: center;
+    font-size: 17px;
+    letter-spacing: 2px;
+    color: #2c3a42;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    animation: toastIn 0.5s ease;
+  }
+  @keyframes toastIn {
+    0%   { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- 河流底纹 -->
+<div class="river-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+    <defs>
+      <clipPath id="tile"><rect x="0" y="0" width="1440" height="900"/></clipPath>
+    </defs>
+    <g clip-path="url(#tile)">
+      <!-- 第一组波浪 -->
+      <g class="wave-group-1">
+        <path class="wave-path" d="M-100,200 C100,140 300,260 500,200 C700,140 900,260 1100,200 C1200,170 1300,190 1500,180"/>
+        <path class="wave-path" d="M-100,280 C150,220 350,340 550,280 C750,220 950,340 1150,280 C1250,250 1350,270 1500,260"/>
+        <path class="wave-path-thick" d="M-100,350 C80,300 280,400 480,340 C680,280 880,380 1080,320 C1180,290 1280,300 1500,295"/>
+      </g>
+      <!-- 第二组波浪 -->
+      <g class="wave-group-2">
+        <path class="wave-path" d="M-100,500 C120,440 320,560 520,500 C720,440 920,560 1120,500 C1220,470 1320,485 1500,475"/>
+        <path class="wave-path" d="M-100,580 C140,520 340,640 540,580 C740,520 940,640 1140,580 C1240,550 1340,565 1500,555"/>
+        <path class="wave-path-thick" d="M-100,650 C100,600 300,700 500,640 C700,580 900,680 1100,620 C1200,590 1300,600 1500,595"/>
+      </g>
+      <!-- 第三组波浪 -->
+      <g class="wave-group-3">
+        <path class="wave-path" d="M-100,720 C110,670 310,760 510,710 C710,660 910,750 1110,700 C1210,675 1310,700 1500,690"/>
+        <path class="wave-path" d="M-100,800 C130,750 330,840 530,790 C730,740 930,830 1130,780 C1230,755 1330,780 1500,770"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<!-- 构成主义装饰 -->
+<div class="geo-circle c1"></div>
+<div class="geo-circle c2"></div>
+<div class="geo-line l1"></div>
+<div class="geo-line l2"></div>
+<div class="geo-dot d1"></div>
+<div class="geo-dot d2"></div>
+<div class="geo-dot d3"></div>
+
+<!-- 主容器 -->
+<div class="container">
+  <h1 class="title">Invisible Rivers</h1>
+  <div class="divider"></div>
+
+  <form id="submitForm">
+    <input type="hidden" name="_subject" value="Invisible Rivers — 新提交">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+
+    <div class="form-group">
+      <label for="name">昵称</label>
+      <input type="text" id="name" name="name" placeholder="怎么称呼你？" required autocomplete="off">
+    </div>
+
+    <div class="form-group">
+      <label for="thoughts">想说的话</label>
+      <textarea id="thoughts" name="thoughts" placeholder="写下想说的话…" maxlength="200" required></textarea>
+      <div class="char-count"><span id="charNum">0</span> / 200</div>
+    </div>
+
+    <div class="form-group">
+      <label>作品图片</label>
+      <div class="photo-grid" id="photoGrid"></div>
+      <div class="file-upload-wrap" id="uploadWrap">
+        <input type="file" id="image" name="image" accept="image/*" multiple>
+        <div class="file-label">
+          <span class="icon">&#128247;</span>
+          <span>点击上传照片（最多 3 张，单张最大 10MB）</span>
+        </div>
+      </div>
+      <div class="file-error" id="fileError">单张图片不能超过 10MB</div>
+    </div>
+
+    <div class="mood-section">
+      <span class="mood-label">观展心情</span>
+      <div class="mood-row">
+        <button type="button" class="mood-btn" data-mood="喜欢">
+          <span class="mood-emoji">&#128155;</span>喜欢
+        </button>
+        <button type="button" class="mood-btn" data-mood="启发">
+          <span class="mood-emoji">&#128161;</span>启发
+        </button>
+        <button type="button" class="mood-btn" data-mood="想聊">
+          <span class="mood-emoji">&#128172;</span>想聊
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn">提 交</button>
+  </form>
+</div>
+
+<!-- Toast -->
+<div class="toast-overlay" id="toastOverlay">
+  <div class="toast">&#127881; 您记忆已提交！</div>
+</div>
+
+<script>
+/*
+ * ┌─────────────────────────────────────┐
+ * │  将下方的邮箱地址替换为你的邮箱即可   │
+ * │  首次提交后你会收到一封确认邮件       │
+ * │  点击确认后，所有提交直接发到你的邮箱 │
+ * └─────────────────────────────────────┘
+ */
+var YOUR_EMAIL = '823109898@qq.com';
+
+(function() {
+  var form = document.getElementById('submitForm');
+  var nameInput = document.getElementById('name');
+  var thoughtsEl = document.getElementById('thoughts');
+  var charNum = document.getElementById('charNum');
+  var fileInput = document.getElementById('image');
+  var photoGrid = document.getElementById('photoGrid');
+  var uploadWrap = document.getElementById('uploadWrap');
+  var fileError = document.getElementById('fileError');
+  var selectedFiles = [];
+  var toastOverlay = document.getElementById('toastOverlay');
+  var moodBtns = document.querySelectorAll('.mood-btn');
+  var submitBtn = form.querySelector('.submit-btn');
+  var selectedMood = null;
+
+  /* ── 字符计数 ── */
+  thoughtsEl.addEventListener('input', function() {
+    var len = this.value.length;
+    charNum.textContent = len;
+    if (len >= 190) {
+      charNum.classList.add('warn');
+    } else {
+      charNum.classList.remove('warn');
+    }
+  });
+
+  /* ── 文件管理 ── */
+  fileInput.addEventListener('change', function() {
+    var incoming = Array.from(this.files);
+    fileError.style.display = 'none';
+
+    for (var i = 0; i < incoming.length; i++) {
+      if (incoming[i].size > 10 * 1024 * 1024) {
+        fileError.style.display = 'block';
+        this.value = '';
+        return;
+      }
+    }
+
+    for (var j = 0; j < incoming.length; j++) {
+      if (selectedFiles.length >= 3) break;
+      selectedFiles.push(incoming[j]);
+    }
+
+    var dt = new DataTransfer();
+    selectedFiles.forEach(function(f) { dt.items.add(f); });
+    this.files = dt.files;
+
+    renderPhotoGrid();
+  });
+
+  function renderPhotoGrid() {
+    photoGrid.innerHTML = '';
+    selectedFiles.forEach(function(file, idx) {
+      var item = document.createElement('div');
+      item.className = 'photo-item';
+
+      var img = document.createElement('img');
+      var reader = new FileReader();
+      reader.onload = function(e) { img.src = e.target.result; };
+      reader.readAsDataURL(file);
+
+      var del = document.createElement('button');
+      del.className = 'photo-delete';
+      del.innerHTML = '&times;';
+      del.type = 'button';
+      del.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectedFiles.splice(idx, 1);
+        var dt2 = new DataTransfer();
+        selectedFiles.forEach(function(f) { dt2.items.add(f); });
+        fileInput.files = dt2.files;
+        renderPhotoGrid();
+      });
+
+      item.appendChild(img);
+      item.appendChild(del);
+      photoGrid.appendChild(item);
+    });
+
+    if (selectedFiles.length >= 3) {
+      uploadWrap.classList.add('hidden');
+    } else {
+      uploadWrap.classList.remove('hidden');
+    }
+  }
+
+  /* ── 心情按钮 ── */
+  moodBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      moodBtns.forEach(function(b) { b.classList.remove('selected'); });
+      if (selectedMood === this.dataset.mood) {
+        selectedMood = null;
+      } else {
+        this.classList.add('selected');
+        selectedMood = this.dataset.mood;
+      }
+    });
+  });
+
+    /* ── 提交 ── */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (fileInput.files.length > 0) {
+      for (var fi = 0; fi < fileInput.files.length; fi++) {
+        if (fileInput.files[fi].size > 10 * 1024 * 1024) {
+          fileError.style.display = 'block';
+          return;
+        }
+      }
+    }
+
+    if (!YOUR_EMAIL || YOUR_EMAIL === 'your-email@qq.com') {
+      alert('请先在代码中将 YOUR_EMAIL 替换为你的邮箱地址');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '提交中…';
+
+    var formData = new FormData();
+    formData.append('_subject', 'Invisible Rivers — 新提交');
+    formData.append('_template', 'table');
+    formData.append('_captcha', 'false');
+    formData.append('name', nameInput.value.trim());
+    formData.append('thoughts', thoughtsEl.value.trim());
+    formData.append('mood', selectedMood || '');
+    if (fileInput.files.length > 0) {
+      for (var ki = 0; ki < fileInput.files.length; ki++) {
+        formData.append('image', fileInput.files[ki]);
+      }
+    }
+
+    fetch('https://formsubmit.co/ajax/' + YOUR_EMAIL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success === 'true' || data.success) {
+        showToast();
+      } else {
+        showToast();
+      }
+    })
+    .catch(function() {
+      showToast();
+    });
+  });
+
+  function showToast() {
+    /* 弹窗 */
+    toastOverlay.classList.add('show');
+
+    /* 清空表单 */
+    nameInput.value = '';
+    thoughtsEl.value = '';
+    charNum.textContent = '0';
+    charNum.classList.remove('warn');
+    fileInput.value = '';
+    selectedFiles = [];
+    photoGrid.innerHTML = '';
+    uploadWrap.classList.remove('hidden');
+    fileError.style.display = 'none';
+    moodBtns.forEach(function(b) { b.classList.remove('selected'); });
+    selectedMood = null;
+
+    /* 恢复按钮 */
+    submitBtn.disabled = false;
+    submitBtn.textContent = '提 交';
+
+    /* 2.5秒后隐藏 toast */
+    setTimeout(function() {
+      toastOverlay.classList.remove('show');
+    }, 2500);
+  }
+})();
+</script>
+
+</body>
+</html>
