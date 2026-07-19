@@ -497,14 +497,8 @@
 </div>
 
 <script>
-/*
- * ┌─────────────────────────────────────┐
- * │  将下方的邮箱地址替换为你的邮箱即可   │
- * │  首次提交后你会收到一封确认邮件       │
- * │  点击确认后，所有提交直接发到你的邮箱 │
- * └─────────────────────────────────────┘
- */
-var YOUR_EMAIL = '823109898@qq.com';
+var SUPABASE_URL = 'https://neqwiaprxwwjtycqwcjc.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcXdpYXByeHd3anR5Y3F3Y2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MjY1ODYsImV4cCI6MjEwMDAwMjU4Nn0.KyGmgvkrr-2wguBV1wfglVaMOMtoqWQNQYuePap3188';
 
 (function() {
   var form = document.getElementById('submitForm');
@@ -619,40 +613,51 @@ var YOUR_EMAIL = '823109898@qq.com';
       }
     }
 
-    if (!YOUR_EMAIL || YOUR_EMAIL === 'your-email@qq.com') {
-      alert('请先在代码中将 YOUR_EMAIL 替换为你的邮箱地址');
-      return;
-    }
-
     submitBtn.disabled = true;
     submitBtn.textContent = '提交中…';
 
-    var formData = new FormData();
-    formData.append('_subject', 'Invisible Rivers — 新提交');
-    formData.append('_template', 'table');
-    formData.append('_captcha', 'false');
-    formData.append('name', nameInput.value.trim());
-    formData.append('thoughts', thoughtsEl.value.trim());
-    formData.append('mood', selectedMood || '');
-    if (fileInput.files.length > 0) {
-      for (var ki = 0; ki < fileInput.files.length; ki++) {
-        formData.append('image', fileInput.files[ki]);
-      }
+    /* 先上传图片到 Supabase Storage */
+    var uploads = [];
+    for (var ui = 0; ui < fileInput.files.length; ui++) {
+      var file = fileInput.files[ui];
+      var filename = Date.now() + '_' + ui + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      uploads.push(
+        fetch(SUPABASE_URL + '/storage/v1/object/images/' + filename, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'apikey': SUPABASE_KEY,
+            'Content-Type': file.type || 'image/jpeg'
+          },
+          body: file
+        }).then(function(res) {
+          if (!res.ok) throw new Error('upload failed');
+          return SUPABASE_URL + '/storage/v1/object/public/images/' + filename;
+        })
+      );
     }
 
-    fetch('https://formsubmit.co/ajax/' + YOUR_EMAIL, {
-      method: 'POST',
-      body: formData
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.success === 'true' || data.success) {
-        showToast();
-      } else {
-        showToast();
-      }
-    })
-    .catch(function() {
+    Promise.all(uploads).then(function(imageUrls) {
+      /* 图片上传完成，写入数据库 */
+      return fetch(SUPABASE_URL + '/rest/v1/submissions', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          name: nameInput.value.trim(),
+          thoughts: thoughtsEl.value.trim(),
+          mood: selectedMood || '',
+          image_urls: imageUrls
+        })
+      });
+    }).then(function() {
+      showToast();
+    }).catch(function(err) {
+      console.error(err);
       showToast();
     });
   });
