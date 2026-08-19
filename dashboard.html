@@ -7,7 +7,8 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: Georgia, "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+    font-family: "Microsoft YaHei Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-weight: 300;
     background: #f5f5f5;
     color: #000;
     min-height: 100vh;
@@ -15,9 +16,8 @@
   }
   .wrap { max-width: 720px; margin: 0 auto; }
   h1 {
-    font-family: Georgia, 'Noto Serif SC', serif;
     font-size: 26px;
-    font-weight: 400;
+    font-weight: 300;
     letter-spacing: 6px;
     margin-bottom: 6px;
   }
@@ -26,7 +26,7 @@
   .card { border-top: 1px solid #ddd; padding: 20px 0; }
   .card-time { font-size: 11px; color: #aaa; letter-spacing: 1px; margin-bottom: 14px; }
   .sec { margin-bottom: 16px; }
-  .sec-title { font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
+  .sec-title { font-size: 13px; font-weight: 400; letter-spacing: 1px; margin-bottom: 6px; }
   .sec-text { font-size: 14px; line-height: 1.7; color: #333; margin-bottom: 8px; }
   .card-images { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
   .card-images img {
@@ -58,75 +58,139 @@
     border: 1px solid #ccc; padding: 6px 14px; border-radius: 2px; transition: all 0.2s;
   }
   .refresh a:hover { background: #000; color: #fff; border-color: #000; }
+  .login {
+    max-width: 320px;
+    margin: 60px auto;
+    text-align: center;
+  }
+  .login input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    padding: 10px 0;
+    font-family: inherit;
+    font-size: 16px;
+    color: #000;
+    outline: none;
+    margin-bottom: 20px;
+  }
+  .login button {
+    width: 100%;
+    padding: 12px 0;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: #000;
+    transition: all 0.3s;
+  }
+  .login button:hover { background: #000; color: #fff; }
+  .login .err { font-size: 12px; color: #b88060; margin-top: 12px; display: none; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="refresh"><a href="index.html">&larr; 返回提交页</a></div>
-  <h1>暗河</h1>
-  <p class="count">提交记录</p>
-  <div class="divider"></div>
-  <div id="list"></div>
+  <div id="login" class="login">
+    <h1>暗河</h1>
+    <div class="divider" style="margin: 16px auto 32px;"></div>
+    <p class="count">输入密码查看提交记录</p>
+    <input type="password" id="pwd" placeholder="密码" autocomplete="off">
+    <button onclick="doLogin()">进入</button>
+    <p class="err" id="loginErr">密码错误</p>
+  </div>
+
+  <div id="main" style="display:none;">
+    <div class="refresh"><a href="index.html">&larr; 返回提交页</a></div>
+    <h1>暗河</h1>
+    <p class="count">提交记录</p>
+    <div class="divider"></div>
+    <div id="list"></div>
+  </div>
 </div>
 <div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
   <img src="" alt="">
 </div>
 <script>
-(function() {
-  var list = document.getElementById('list');
-  var countEl = document.querySelector('.count');
+var PWD = sessionStorage.getItem('anhe_pwd') || '';
 
-  fetch('/.netlify/functions/list')
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    countEl.textContent = data.length + ' 条提交';
-    if (!data.length) {
-      list.innerHTML = '<div class="empty">暂无提交记录</div>';
-      return;
+function doLogin() {
+  PWD = document.getElementById('pwd').value;
+  load();
+}
+
+function load() {
+  fetch('/.netlify/functions/list', { headers: { 'x-auth-key': PWD } })
+  .then(function(r) {
+    if (r.status === 401) {
+      document.getElementById('loginErr').style.display = 'block';
+      return Promise.reject();
     }
-    var html = '';
-    data.forEach(function(s) {
-      var time = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '';
-      html += '<div class="card"><div class="card-time">' + time + '</div>';
-
-      html += '<div class="sec"><div class="sec-title">1 · 记录你生成的投影</div>';
-      html += imagesHtml(s.projection_image_urls);
-      if (s.projection_text) html += '<div class="sec-text">' + esc(s.projection_text) + '</div>';
-      html += '</div>';
-
-      html += '<div class="sec"><div class="sec-title">2 · 分享一段关于“家”的记忆</div>';
-      html += imagesHtml(s.home_image_urls);
-      if (s.home_text) html += '<div class="sec-text">' + esc(s.home_text) + '</div>';
-      html += '</div>';
-
-      if (s.comment) {
-        html += '<div class="sec"><div class="sec-title">3 · 对于作品的评价</div>';
-        html += '<div class="sec-text">' + esc(s.comment) + '</div></div>';
-      }
-
-      html += '</div>';
-    });
-    list.innerHTML = html;
+    sessionStorage.setItem('anhe_pwd', PWD);
+    return r.json();
   })
-  .catch(function() {
-    list.innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
+  .then(function(data) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    render(data);
+  })
+  .catch(function() {});
+}
+
+function render(data) {
+  var list = document.getElementById('list');
+  var countEl = document.querySelector('#main .count');
+  countEl.textContent = data.length + ' 条提交';
+  if (!data.length) {
+    list.innerHTML = '<div class="empty">暂无提交记录</div>';
+    return;
+  }
+  var html = '';
+  data.forEach(function(s) {
+    var time = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '';
+    html += '<div class="card"><div class="card-time">' + time + '</div>';
+
+    html += '<div class="sec"><div class="sec-title">记录你捕获的影像</div>';
+    html += imagesHtml(s.projection_image_urls);
+    if (s.projection_text) html += '<div class="sec-text">' + esc(s.projection_text) + '</div>';
+    html += '</div>';
+
+    html += '<div class="sec"><div class="sec-title">分享一段关于“家”的记忆</div>';
+    html += imagesHtml(s.home_image_urls);
+    if (s.home_text) html += '<div class="sec-text">' + esc(s.home_text) + '</div>';
+    html += '</div>';
+
+    if (s.mood || s.comment) {
+      html += '<div class="sec"><div class="sec-title">观展心情</div>';
+      if (s.mood) html += '<div class="sec-text">心情：' + esc(s.mood) + '</div>';
+      if (s.comment) html += '<div class="sec-text">' + esc(s.comment) + '</div>';
+      html += '</div>';
+    }
+
+    html += '</div>';
   });
+  list.innerHTML = html;
+}
 
-  function imagesHtml(urls) {
-    if (!urls || !urls.length) return '';
-    var h = '<div class="card-images">';
-    urls.forEach(function(url) {
-      h += '<img src="' + url + '" onclick="event.stopPropagation();var lb=document.getElementById(\'lightbox\');lb.querySelector(\'img\').src=\'' + url + '\';lb.classList.add(\'show\')" loading="lazy">';
-    });
-    h += '</div>';
-    return h;
-  }
+function imagesHtml(urls) {
+  if (!urls || !urls.length) return '';
+  var h = '<div class="card-images">';
+  urls.forEach(function(url) {
+    h += '<img src="' + url + '" onclick="event.stopPropagation();var lb=document.getElementById(\'lightbox\');lb.querySelector(\'img\').src=\'' + url + '\';lb.classList.add(\'show\')" loading="lazy">';
+  });
+  h += '</div>';
+  return h;
+}
 
-  function esc(s) {
-    if (!s) return '';
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-})();
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+if (PWD) { load(); }
 </script>
 </body>
 </html>
