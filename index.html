@@ -173,7 +173,7 @@
 
   /* ── 表单 ── */
   .form-group {
-    margin-bottom: 28px;
+    margin-bottom: 42px;
   }
   .form-group label {
     display: block;
@@ -233,7 +233,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    border: 1px dashed #000;
+    border: 1px dashed rgba(0,0,0,0.3);
     border-radius: 2px;
     padding: 16px 20px;
     cursor: pointer;
@@ -241,6 +241,9 @@
     font-size: 12px;
     letter-spacing: 2px;
     color: #000;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .file-label:hover {
     background: rgba(0,0,0,0.35);
@@ -466,6 +469,10 @@
   .form-group textarea::placeholder {
     font-size: 12px;
     line-height: 1.8;
+    color: #60ffe3;
+  }
+  .form-group input[type="text"]::placeholder {
+    font-size: 12px;
     color: #60ffe3;
   }
   @media (max-width: 480px) {
@@ -760,6 +767,18 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   initCounter('text1', 'charNum1', 90);
   initCounter('text2', 'charNum2', 90);
   initCounter('text3', 'charNum3', 190);
+
+  /* ── 昵称：点击即隐藏提示词 ── */
+  var nameInput = document.getElementById('name');
+  if (nameInput) {
+    nameInput.addEventListener('focus', function() {
+      if (!this.dataset.ph) this.dataset.ph = this.getAttribute('placeholder') || '';
+      this.setAttribute('placeholder', '');
+    });
+    nameInput.addEventListener('blur', function() {
+      if (!this.value) this.setAttribute('placeholder', this.dataset.ph || '');
+    });
+  }
 
   /* ── 提交 ── */
   form.addEventListener('submit', function(e) {
