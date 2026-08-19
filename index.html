@@ -21,6 +21,9 @@
     position: relative;
     overflow-x: hidden;
   }
+  @media (max-width: 768px) {
+    body { background-attachment: scroll; }
+  }
 
   /* ── 河流底纹 ── */
   .river-bg {
@@ -447,20 +450,24 @@
     margin: 8px 0;
   }
   .form-group textarea {
-    height: 150px;
+    height: 170px;
     overflow: hidden;
-    border: 1px solid #ccc;
+    border: 1px solid #666;
     border-radius: 2px;
     padding: 12px 14px;
     background: transparent;
   }
   .form-group textarea.big {
-    height: 190px;
+    height: 230px;
   }
   .form-group textarea::placeholder {
     font-size: 12px;
     line-height: 1.8;
-    color: rgba(0, 47, 167, 0.8);
+    color: #0abab5;
+  }
+  @media (max-width: 480px) {
+    .form-group textarea { height: 200px; }
+    .form-group textarea.big { height: 260px; }
   }
 
   /* ── 提交错误 ── */
@@ -468,8 +475,9 @@
     display: none;
     font-size: 12px;
     letter-spacing: 1px;
-    color: #b88060;
+    color: #ffb6c1;
     margin-bottom: 12px;
+    text-align: center;
   }
   .consent-note {
     font-size: 12px;
@@ -579,7 +587,6 @@
       <div class="file-upload-wrap" id="uploadWrap1">
         <input type="file" id="image1" accept="image/*" multiple>
         <div class="file-label">
-          <span class="icon">&#128247;</span>
           <span>点击上传投影照片</span>
         </div>
       </div>
@@ -598,7 +605,6 @@
       <div class="file-upload-wrap" id="uploadWrap2">
         <input type="file" id="image2" accept="image/*" multiple>
         <div class="file-label">
-          <span class="icon">&#128247;</span>
           <span>点击上传记忆照片</span>
         </div>
       </div>
