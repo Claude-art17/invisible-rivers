@@ -356,12 +356,10 @@
   /* ── 提交按钮 ── */
   .submit-btn {
     width: 100%;
-    padding: 16px 0;
-    border: 1px solid rgba(0,0,0,0.4);
+    padding: 15px 0;
+    border: 1px solid #000;
     border-radius: 2px;
-    background: rgba(255,255,255,0.18);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: transparent;
     cursor: pointer;
     font-family: inherit;
     font-size: 15px;
@@ -369,9 +367,10 @@
     color: #000;
     transition: all 0.3s;
   }
-  .submit-btn:hover {
-    background: rgba(0,0,0,0.35);
-    color: #fff;
+  .submit-btn:hover,
+  .submit-btn:active {
+    background: rgba(96,255,227,0.7);
+    color: #000;
   }
   .submit-btn:active {
     transform: scale(0.98);
