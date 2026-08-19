@@ -576,7 +576,7 @@
       <div class="file-error" id="fileError1">单张图片不能超过 10MB</div>
 
       <p class="hint">这个投影让你想到什么？</p>
-      <textarea id="text1" placeholder="写下一句话或一个标题…" maxlength="100"></textarea>
+      <textarea id="text1" placeholder="在这些重叠的影像中，什么让你感到熟悉，什么又让你感到陌生？&#10;例如：重叠的窗户让我想起小时候住过的房子。" maxlength="100"></textarea>
       <div class="char-count"><span id="charNum1">0</span> / 100</div>
     </div>
 
@@ -595,27 +595,14 @@
       <div class="file-error" id="fileError2">单张图片不能超过 10MB</div>
 
       <p class="hint">用一句话讲讲照片背后的故事</p>
-      <textarea id="text2" placeholder="你想起了什么？" maxlength="100"></textarea>
+      <textarea id="text2" placeholder="“家”不一定是一座房子或出生地。它也可以是让你感到归属感的一条街、一个人、一段旅程、一种语言、一个临时居住的房间，或一个已经无法返回的地方。&#10;你记得什么？什么至今仍留在心中？为什么这张照片对你重要？&#10;例如：外婆小时候经常会骑自行车带着我去吃豆腐花，那时小小的我就坐在这个铁框里，如今这辆自行车已经锈迹斑斑。" maxlength="100"></textarea>
       <div class="char-count"><span id="charNum2">0</span> / 100</div>
     </div>
 
     <!-- 第 3 题 -->
     <div class="form-group">
-      <p class="q-title">观展心情</p>
-      <div class="mood-section">
-        <div class="mood-row">
-          <button type="button" class="mood-btn" data-mood="喜欢">
-            <span class="mood-emoji">&#10084;&#65039;</span>喜欢
-          </button>
-          <button type="button" class="mood-btn" data-mood="启发">
-            <span class="mood-emoji">&#128161;</span>启发
-          </button>
-          <button type="button" class="mood-btn" data-mood="想聊">
-            <span class="mood-emoji">&#128172;</span>想聊
-          </button>
-        </div>
-      </div>
-      <textarea id="text3" class="big" placeholder="想说的话…" maxlength="200"></textarea>
+      <p class="q-title">对于作品的评价</p>
+      <textarea id="text3" class="big" placeholder="你可以分享：&#10;· 对互动方式的感受&#10;· 对地方归属感的回应&#10;· 你突发的灵感或参考&#10;· 对影像、声音或电话的回应&#10;· 你感到不清楚或可以改进的部分" maxlength="200"></textarea>
       <div class="char-count"><span id="charNum3">0</span> / 200</div>
     </div>
 
@@ -728,21 +715,6 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   var up1 = initUpload('image1', 'photoGrid1', 'uploadWrap1', 'fileError1');
   var up2 = initUpload('image2', 'photoGrid2', 'uploadWrap2', 'fileError2');
 
-  /* ── 心情按钮（第 3 题） ── */
-  var moodBtns = document.querySelectorAll('.mood-btn');
-  var selectedMood = null;
-  moodBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      moodBtns.forEach(function(b) { b.classList.remove('selected'); });
-      if (selectedMood === this.dataset.mood) {
-        selectedMood = null;
-      } else {
-        this.classList.add('selected');
-        selectedMood = this.dataset.mood;
-      }
-    });
-  });
-
   /* ── 字数统计 ── */
   function initCounter(textId, numId, warnAt) {
     var ta = document.getElementById(textId);
@@ -765,13 +737,12 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    if (!selectedMood) {
-      submitError.textContent = '请选择一个观展心情';
-      submitError.style.display = 'block';
-      return;
-    }
-    if (!document.getElementById('text3').value.trim()) {
-      submitError.textContent = '请填写想说的话';
+    var hasImage = up1.count() > 0 || up2.count() > 0;
+    var hasText = document.getElementById('text1').value.trim()
+      || document.getElementById('text2').value.trim()
+      || document.getElementById('text3').value.trim();
+    if (!hasImage && !hasText) {
+      submitError.textContent = '请至少上传一张图片或写一段文字';
       submitError.style.display = 'block';
       return;
     }
@@ -790,8 +761,7 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
           projection_files: r[0],
           home_text: document.getElementById('text2').value.trim(),
           home_files: r[1],
-          comment: document.getElementById('text3').value.trim(),
-          mood: selectedMood || ''
+          comment: document.getElementById('text3').value.trim()
         })
       });
     }).then(function(res) {
