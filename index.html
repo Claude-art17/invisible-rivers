@@ -456,30 +456,23 @@
     margin: 8px 0;
   }
   .form-group textarea {
-    height: 170px;
+    height: 46px;
+    min-height: 46px;
     overflow: hidden;
-    border: 1px solid #666;
-    border-radius: 2px;
-    padding: 12px 14px;
-    background: transparent;
   }
   .form-group textarea.big {
-    height: 230px;
+    height: 60px;
   }
-  .form-group textarea::placeholder {
+  .form-group .prompt {
     font-size: 12px;
     line-height: 1.8;
     letter-spacing: 2px;
     color: rgba(0,0,0,0.5);
-  }
-  .form-group input[type="text"]::placeholder {
-    font-size: 12px;
-    letter-spacing: 2px;
-    color: rgba(0,0,0,0.5);
+    margin-top: 8px;
   }
   @media (max-width: 480px) {
-    .form-group textarea { height: 200px; }
-    .form-group textarea.big { height: 260px; }
+    .form-group textarea { height: 50px; }
+    .form-group textarea.big { height: 64px; }
   }
 
   /* ── 提交错误 ── */
@@ -589,7 +582,8 @@
   <form id="submitForm">
     <div class="form-group">
       <p class="q-title">昵称</p>
-      <input type="text" id="name" name="name" placeholder="怎么称呼你？" autocomplete="off">
+      <input type="text" id="name" name="name" autocomplete="off">
+      <div class="prompt">怎么称呼你？</div>
     </div>
 
     <div class="form-group">
@@ -605,7 +599,8 @@
       <div class="file-error" id="fileError1">单张图片不能超过 10MB</div>
 
       <p class="hint">这个投影让你想到什么？</p>
-      <textarea id="text1" placeholder="在这些重叠的影像中，什么让你感到熟悉，什么又让你感到陌生？&#10;例如：重叠的窗户让我想起小时候住过的房子。" maxlength="100"></textarea>
+      <textarea id="text1" maxlength="100"></textarea>
+      <div class="prompt">在这些重叠的影像中，什么让你感到熟悉，什么又让你感到陌生？<br>例如：重叠的窗户让我想起小时候住过的房子。</div>
       <div class="char-count"><span id="charNum1">0</span> / 100</div>
     </div>
 
@@ -623,14 +618,16 @@
       <div class="file-error" id="fileError2">单张图片不能超过 10MB</div>
 
       <p class="hint">用一句话讲讲照片背后的故事</p>
-      <textarea id="text2" placeholder="“家”不一定是一座房子或出生地。它也可以是让你感到归属感的一条街、一个人、一段旅程、一种语言、一个临时居住的房间，或一个已经无法返回的地方。&#10;你记得什么？什么至今仍留在心中？为什么这张照片对你重要？&#10;例如：外婆小时候经常会骑自行车带着我去吃豆腐花，那时小小的我就坐在这个铁框里，如今这辆自行车已经锈迹斑斑。" maxlength="100"></textarea>
+      <textarea id="text2" maxlength="100"></textarea>
+      <div class="prompt">“家”不一定是一座房子或出生地。它也可以是让你感到归属感的一条街、一个人、一段旅程、一种语言、一个临时居住的房间，或一个已经无法返回的地方。<br>你记得什么？什么至今仍留在心中？为什么这张照片对你重要？<br>例如：外婆小时候经常会骑自行车带着我去吃豆腐花，那时小小的我就坐在这个铁框里，如今这辆自行车已经锈迹斑斑。</div>
       <div class="char-count"><span id="charNum2">0</span> / 100</div>
     </div>
 
     <!-- 第 3 题 -->
     <div class="form-group">
       <p class="q-title">对于作品的评价</p>
-      <textarea id="text3" class="big" placeholder="你可以分享：&#10;· 对互动方式的感受&#10;· 对地方归属感的回应&#10;· 你突发的灵感或参考&#10;· 对影像、声音或电话的回应&#10;· 你感到不清楚或可以改进的部分" maxlength="200"></textarea>
+      <textarea id="text3" class="big" maxlength="200"></textarea>
+      <div class="prompt">你可以分享：<br>· 对互动方式的感受<br>· 对地方归属感的回应<br>· 你突发的灵感或参考<br>· 对影像、声音或电话的回应<br>· 你感到不清楚或可以改进的部分</div>
       <div class="char-count"><span id="charNum3">0</span> / 200</div>
     </div>
 
