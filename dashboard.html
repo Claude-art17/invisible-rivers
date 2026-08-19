@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invisible Rivers — 提交记录</title>
+<title>暗河 — 提交记录</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -15,30 +15,20 @@
   }
   .wrap { max-width: 720px; margin: 0 auto; }
   h1 {
-    font-family: 'Josefin Sans', 'Segoe UI', 'PingFang SC', sans-serif;
-    font-size: 24px;
-    font-weight: 200;
-    letter-spacing: 8px;
-    text-transform: uppercase;
+    font-family: Georgia, 'Noto Serif SC', serif;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 6px;
     margin-bottom: 6px;
   }
   .count { font-size: 12px; letter-spacing: 2px; color: #888; margin-bottom: 32px; }
   .divider { width: 48px; height: 1px; background: #000; margin-bottom: 36px; }
-  .card {
-    border-top: 1px solid #ddd;
-    padding: 20px 0;
-  }
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-  .card-name { font-size: 16px; letter-spacing: 2px; font-weight: bold; }
-  .card-time { font-size: 11px; color: #aaa; letter-spacing: 1px; }
-  .card-mood { font-size: 13px; color: #666; letter-spacing: 1px; margin-bottom: 8px; }
-  .card-thoughts { font-size: 14px; line-height: 1.7; color: #333; margin-bottom: 12px; }
-  .card-images { display: flex; gap: 8px; flex-wrap: wrap; }
+  .card { border-top: 1px solid #ddd; padding: 20px 0; }
+  .card-time { font-size: 11px; color: #aaa; letter-spacing: 1px; margin-bottom: 14px; }
+  .sec { margin-bottom: 16px; }
+  .sec-title { font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
+  .sec-text { font-size: 14px; line-height: 1.7; color: #333; margin-bottom: 8px; }
+  .card-images { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
   .card-images img {
     max-width: 160px;
     max-height: 120px;
@@ -73,7 +63,7 @@
 <body>
 <div class="wrap">
   <div class="refresh"><a href="index.html">&larr; 返回提交页</a></div>
-  <h1>Invisible Rivers</h1>
+  <h1>暗河</h1>
   <p class="count">提交记录</p>
   <div class="divider"></div>
   <div id="list"></div>
@@ -82,13 +72,9 @@
   <img src="" alt="">
 </div>
 <script>
-var SUPABASE_URL = 'https://neqwiaprxwwjtycqwcjc.supabase.co';
-
 (function() {
   var list = document.getElementById('list');
   var countEl = document.querySelector('.count');
-  var lightbox = document.getElementById('lightbox');
-  var lightboxImg = lightbox.querySelector('img');
 
   fetch('/.netlify/functions/list')
   .then(function(r) { return r.json(); })
@@ -101,27 +87,40 @@ var SUPABASE_URL = 'https://neqwiaprxwwjtycqwcjc.supabase.co';
     var html = '';
     data.forEach(function(s) {
       var time = s.created_at ? new Date(s.created_at).toLocaleString('zh-CN') : '';
-      var imgHtml = '';
-      if (s.image_urls && s.image_urls.length) {
-        imgHtml = '<div class="card-images">';
-        s.image_urls.forEach(function(url) {
-          imgHtml += '<img src="' + url + '" onclick="event.stopPropagation();var lb=document.getElementById(\'lightbox\');lb.querySelector(\'img\').src=\'' + url + '\';lb.classList.add(\'show\')" loading="lazy">';
-        });
-        imgHtml += '</div>';
+      html += '<div class="card"><div class="card-time">' + time + '</div>';
+
+      html += '<div class="sec"><div class="sec-title">1 · 记录你生成的投影</div>';
+      html += imagesHtml(s.projection_image_urls);
+      if (s.projection_text) html += '<div class="sec-text">' + esc(s.projection_text) + '</div>';
+      html += '</div>';
+
+      html += '<div class="sec"><div class="sec-title">2 · 分享一段关于“家”的记忆</div>';
+      html += imagesHtml(s.home_image_urls);
+      if (s.home_text) html += '<div class="sec-text">' + esc(s.home_text) + '</div>';
+      html += '</div>';
+
+      if (s.comment) {
+        html += '<div class="sec"><div class="sec-title">3 · 对于作品的评价</div>';
+        html += '<div class="sec-text">' + esc(s.comment) + '</div></div>';
       }
-      var mood = s.mood || '';
-      html += '<div class="card">'
-        + '<div class="card-header"><span class="card-name">' + esc(s.name) + '</span><span class="card-time">' + time + '</span></div>'
-        + (mood ? '<div class="card-mood">' + esc(mood) + '</div>' : '')
-        + '<div class="card-thoughts">' + esc(s.thoughts) + '</div>'
-        + imgHtml
-        + '</div>';
+
+      html += '</div>';
     });
     list.innerHTML = html;
   })
   .catch(function() {
     list.innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
   });
+
+  function imagesHtml(urls) {
+    if (!urls || !urls.length) return '';
+    var h = '<div class="card-images">';
+    urls.forEach(function(url) {
+      h += '<img src="' + url + '" onclick="event.stopPropagation();var lb=document.getElementById(\'lightbox\');lb.querySelector(\'img\').src=\'' + url + '\';lb.classList.add(\'show\')" loading="lazy">';
+    });
+    h += '</div>';
+    return h;
+  }
 
   function esc(s) {
     if (!s) return '';
