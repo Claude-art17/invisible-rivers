@@ -1,6 +1,11 @@
-exports.handler = async () => {
-  const SUPABASE_URL = 'https://neqwiaprxwwjtycqwcjc.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcXdpYXByeHd3anR5Y3F3Y2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MjY1ODYsImV4cCI6MjEwMDAwMjU4Nn0.KyGmgvkrr-2wguBV1wfglVaMOMtoqWQNQYuePap3188';
+const ADMIN_PASSWORD = 'anhe2026';
+const SUPABASE_URL = 'https://neqwiaprxwwjtycqwcjc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcXdpYXByeHd3anR5Y3F3Y2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MjY1ODYsImV4cCI6MjEwMDAwMjU4Nn0.KyGmgvkrr-2wguBV1wfglVaMOMtoqWQNQYuePap3188';
+
+exports.handler = async (event) => {
+  if (!event.headers['x-auth-key'] || event.headers['x-auth-key'] !== ADMIN_PASSWORD) {
+    return { statusCode: 401, body: 'unauthorized' };
+  }
 
   const r = await fetch(SUPABASE_URL + '/rest/v1/submissions?select=*&order=created_at.desc', {
     headers: {
