@@ -744,13 +744,6 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   function initCounter(textId, numId, warnAt) {
     var ta = document.getElementById(textId);
     var num = document.getElementById(numId);
-    ta.addEventListener('focus', function() {
-      if (!this.dataset.ph) this.dataset.ph = this.getAttribute('placeholder') || '';
-      this.setAttribute('placeholder', '');
-    });
-    ta.addEventListener('blur', function() {
-      if (!this.value) this.setAttribute('placeholder', this.dataset.ph || '');
-    });
     ta.addEventListener('input', function() {
       var len = this.value.length;
       num.textContent = len;
@@ -766,18 +759,6 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   initCounter('text1', 'charNum1', 90);
   initCounter('text2', 'charNum2', 90);
   initCounter('text3', 'charNum3', 190);
-
-  /* ── 昵称：点击即隐藏提示词 ── */
-  var nameInput = document.getElementById('name');
-  if (nameInput) {
-    nameInput.addEventListener('focus', function() {
-      if (!this.dataset.ph) this.dataset.ph = this.getAttribute('placeholder') || '';
-      this.setAttribute('placeholder', '');
-    });
-    nameInput.addEventListener('blur', function() {
-      if (!this.value) this.setAttribute('placeholder', this.dataset.ph || '');
-    });
-  }
 
   /* ── 提交 ── */
   form.addEventListener('submit', function(e) {
