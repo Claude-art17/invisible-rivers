@@ -447,10 +447,16 @@
     margin: 8px 0;
   }
   .form-group textarea {
-    height: 88px;
+    height: 150px;
+    overflow: hidden;
   }
   .form-group textarea.big {
-    height: 120px;
+    height: 190px;
+  }
+  .form-group textarea::placeholder {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #002FA7;
   }
 
   /* ── 提交错误 ── */
@@ -727,6 +733,8 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
       } else {
         num.parentNode.classList.remove('warn');
       }
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
     });
   }
   initCounter('text1', 'charNum1', 90);
