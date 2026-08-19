@@ -9,7 +9,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: Georgia, "Noto Serif SC", "Source Han Serif SC", "SimSun", "STSong", serif;
+    font-family: "Microsoft YaHei Light", "Microsoft YaHei", "微软雅黑", "PingFang SC", sans-serif;
+    font-weight: 300;
     background: #222 url('bg.jpg') center/cover no-repeat;
     background-attachment: fixed;
     color: #2c3a42;
@@ -131,13 +132,22 @@
 
   /* ── 标题 ── */
   .title {
-    font-family: Georgia, "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+    font-family: 'Josefin Sans', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 34px;
-    font-weight: 400;
-    letter-spacing: 6px;
+    font-weight: 200;
+    letter-spacing: 10px;
+    text-transform: uppercase;
     color: #000;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     line-height: 1.2;
+  }
+  .zh-title {
+    font-family: "Microsoft YaHei Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: #000;
+    margin-bottom: 6px;
   }
   .subtitle {
     font-size: 13px;
@@ -417,9 +427,9 @@
 
   /* ── 题目 ── */
   .q-title {
-    font-size: 14px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 2px;
     color: #000;
     margin: 6px 0 10px;
   }
@@ -454,8 +464,26 @@
 
   /* ── 成功页 ── */
   .success { text-align: center; }
-  .success .title { font-size: 28px; letter-spacing: 4px; }
-  .success .intro { text-align: left; margin-bottom: 0; }
+  .success .title { margin-bottom: 6px; }
+  .success .intro { text-align: center; margin-bottom: 0; }
+
+  /* ── 参与说明与同意 ── */
+  .consent {
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 2px;
+    padding: 10px 14px;
+    margin-bottom: 28px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #000;
+    background: rgba(255,255,255,0.15);
+  }
+  .consent summary {
+    cursor: pointer;
+    letter-spacing: 2px;
+    outline: none;
+  }
+  .consent p { margin: 6px 0; }
 </style>
 </head>
 <body>
@@ -499,22 +527,36 @@
 
 <!-- 主容器 -->
 <div class="container" id="formContainer">
-  <h1 class="title">暗河</h1>
+  <h1 class="title">INVISIBLE RIVERS</h1>
+  <p class="zh-title">暗河</p>
   <p class="subtitle">留下一段记忆，让它继续流动</p>
   <div class="divider"></div>
 
   <div class="intro">
-    <p>有些地方，即使离开很久以后，依然留在我们心中。它们保存着一些痕迹：一句话、一种声音、一处风景，以及曾经生活在那里的自己。</p>
-    <p>感谢你参与《暗河》。请记录刚刚生成的投影，并分享一段属于你的地方记忆。你的回应将帮助我们理解，人们如何通过影像、记忆与共同参与，重新感知“家”与归属。</p>
-    <p>你上传的照片与文字可能被匿名制作成胶片，加入《暗河》的记忆箱，与其他观众自由选择、组合和投影。</p>
-    <p class="note">本互动共 3 题，填写约需 5 分钟。本互动完全自愿且匿名。</p>
+    <p>有些地方，即使离开很久以后，依然留在我们心中。它们保存着一些细微的痕迹：一段对话、一个动作、一种气味、一处风景，以及曾经生活在那里的自己。</p>
+    <p>感谢你参与《暗河》的胶片投影。接下来，你可以记录刚刚生成的影像，分享它唤起的感受，或留下一段属于你的地方记忆。经你同意后，这段记忆可能被制作成新的胶片，与其他观众相遇，并汇入不断生长的《暗河》。</p>
+    <p class="note">填写约需 5 分钟。除特别标注外，所有问题均可跳过。</p>
   </div>
 
+  <details class="consent">
+    <summary>参与说明与同意</summary>
+    <p>本互动是艺术作品《暗河》及相关实践研究的一部分，旨在了解观众如何通过影像组合、地方记忆与共同叙事参与作品。</p>
+    <p>参与完全自愿，除特别标注外，你可以跳过任何问题或随时退出。</p>
+    <p>回答将以匿名或昵称方式保存。</p>
+    <p>上传内容不会用于商业用途。对外展示时，艺术家将尽可能移除能够识别个人身份的信息。</p>
+    <p>请勿上传包含敏感信息的图片或文字（如证件、住址、联系方式、密码等）。</p>
+    <p>免责声明：你上传的影像与在社交媒体公开发布类似，可能被其他观众看到，并可能在展览中被加工、组合和展示。你可以选择只上传文字、不上传图片。</p>
+  </details>
+
   <form id="submitForm">
-    <!-- 第 1 题 -->
     <div class="form-group">
-      <p class="q-title">1 · 记录你生成的投影</p>
-      <p class="hint">请上传一张你刚刚组合的投影照片（请拍摄由你选择、移动和组合胶片后形成的投影）。</p>
+      <p class="q-title">昵称</p>
+      <input type="text" id="name" name="name" placeholder="怎么称呼你？" autocomplete="off">
+    </div>
+
+    <div class="form-group">
+      <p class="q-title">记录你捕获的影像</p>
+      <p class="hint">上传一张你组合的投影照片</p>
       <div class="photo-grid" id="photoGrid1"></div>
       <div class="file-upload-wrap" id="uploadWrap1">
         <input type="file" id="image1" accept="image/*" multiple>
@@ -525,52 +567,62 @@
       </div>
       <div class="file-error" id="fileError1">单张图片不能超过 10MB</div>
 
-      <p class="hint">这个投影场景带给你怎样的感受或联想？</p>
-      <textarea id="text1" placeholder="在这些重叠的影像中，什么让你感到熟悉，什么又让你感到陌生？&#10;例如：重叠的窗户让我想起小时候住过的房子。" maxlength="100" required></textarea>
+      <p class="hint">这个投影让你想到什么？</p>
+      <textarea id="text1" placeholder="写下一句话或一个标题…" maxlength="100"></textarea>
       <div class="char-count"><span id="charNum1">0</span> / 100</div>
     </div>
 
     <!-- 第 2 题 -->
     <div class="form-group">
-      <p class="q-title">2 · 分享一段关于“家”的记忆</p>
-      <p class="hint">请上传一张与你的家乡，或与你产生归属感的地方有关的照片。</p>
+      <p class="q-title">分享一段关于“家”的记忆</p>
+      <p class="hint">上传一张相关的记忆照片</p>
       <div class="photo-grid" id="photoGrid2"></div>
       <div class="file-upload-wrap" id="uploadWrap2">
         <input type="file" id="image2" accept="image/*" multiple>
         <div class="file-label">
           <span class="icon">&#128247;</span>
-          <span>点击上传家乡照片</span>
+          <span>点击上传记忆照片</span>
         </div>
       </div>
       <div class="file-error" id="fileError2">单张图片不能超过 10MB</div>
 
-      <p class="hint">“家”不一定是一座房子或出生地。它也可以是让你感到归属感的一条街、一个人、一段旅程、一种语言、一个临时居住的房间，或一个已经无法返回的地方。</p>
-      <p class="hint">请用一句话讲述照片背后的故事</p>
-      <textarea id="text2" placeholder="你记得什么？什么至今仍留在心中？为什么这张照片对你重要？&#10;例如：外婆小时候经常会骑自行车带着我去吃豆腐花，那时小小的我就坐在这个铁框里，如今这辆自行车已经锈迹斑斑。" maxlength="100" required></textarea>
+      <p class="hint">用一句话讲讲照片背后的故事</p>
+      <textarea id="text2" placeholder="你想起了什么？" maxlength="100"></textarea>
       <div class="char-count"><span id="charNum2">0</span> / 100</div>
     </div>
 
     <!-- 第 3 题 -->
     <div class="form-group">
-      <p class="q-title">3 · 对于作品的评价 <span class="optional">（选答）</span></p>
-      <p class="hint">你对此作品《暗河》有什么其他感受或想对两位艺术家说些什么？</p>
-      <textarea id="text3" class="big" placeholder="你可以分享：&#10;· 对互动方式的感受&#10;· 对影像、声音或电话的回应&#10;· 对地方归属感的回应&#10;· 你突发的灵感或参考&#10;· 你感到不清楚或可以改进的部分" maxlength="200"></textarea>
+      <p class="q-title">观展心情</p>
+      <div class="mood-section">
+        <div class="mood-row">
+          <button type="button" class="mood-btn" data-mood="喜欢">
+            <span class="mood-emoji">&#10084;&#65039;</span>喜欢
+          </button>
+          <button type="button" class="mood-btn" data-mood="启发">
+            <span class="mood-emoji">&#128161;</span>启发
+          </button>
+          <button type="button" class="mood-btn" data-mood="想聊">
+            <span class="mood-emoji">&#128172;</span>想聊
+          </button>
+        </div>
+      </div>
+      <textarea id="text3" class="big" placeholder="想说的话…" maxlength="200"></textarea>
       <div class="char-count"><span id="charNum3">0</span> / 200</div>
     </div>
 
-    <div class="submit-error" id="submitError">请至少上传一张投影照片和一张家乡照片</div>
+    <div class="submit-error" id="submitError"></div>
     <button type="submit" class="submit-btn">让记忆汇入《暗河》</button>
   </form>
 </div>
 
 <!-- 成功页 -->
 <div class="container success" id="successContainer" style="display:none;">
-  <h1 class="title">谢谢你</h1>
-  <p class="subtitle">让一段记忆进入《暗河》</p>
+  <h1 class="title">INVISIBLE RIVERS</h1>
+  <p class="zh-title">暗河</p>
   <div class="divider"></div>
   <div class="intro">
-    <p>你留下的影像与故事，使这件作品在不同的人、地点与时间之间继续生长。</p>
-    <p>这里没有固定的最终画面。每一次选择与分享，都在重新协商“家”的意义。</p>
+    <p>谢谢，你的记忆已汇入《暗河》。</p>
   </div>
 </div>
 
@@ -667,6 +719,21 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   var up1 = initUpload('image1', 'photoGrid1', 'uploadWrap1', 'fileError1');
   var up2 = initUpload('image2', 'photoGrid2', 'uploadWrap2', 'fileError2');
 
+  /* ── 心情按钮（第 3 题） ── */
+  var moodBtns = document.querySelectorAll('.mood-btn');
+  var selectedMood = null;
+  moodBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      moodBtns.forEach(function(b) { b.classList.remove('selected'); });
+      if (selectedMood === this.dataset.mood) {
+        selectedMood = null;
+      } else {
+        this.classList.add('selected');
+        selectedMood = this.dataset.mood;
+      }
+    });
+  });
+
   /* ── 字数统计 ── */
   function initCounter(textId, numId, warnAt) {
     var ta = document.getElementById(textId);
@@ -689,7 +756,13 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
   form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    if (up1.count() === 0 || up2.count() === 0) {
+    if (!selectedMood) {
+      submitError.textContent = '请选择一个观展心情';
+      submitError.style.display = 'block';
+      return;
+    }
+    if (!document.getElementById('text3').value.trim()) {
+      submitError.textContent = '请填写想说的话';
       submitError.style.display = 'block';
       return;
     }
@@ -703,11 +776,13 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: document.getElementById('name').value.trim(),
           projection_text: document.getElementById('text1').value.trim(),
           projection_files: r[0],
           home_text: document.getElementById('text2').value.trim(),
           home_files: r[1],
-          comment: document.getElementById('text3').value.trim()
+          comment: document.getElementById('text3').value.trim(),
+          mood: selectedMood || ''
         })
       });
     }).then(function(res) {
