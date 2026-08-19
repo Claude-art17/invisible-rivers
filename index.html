@@ -609,8 +609,8 @@
       <div class="file-error" id="fileError1">单张图片不能超过 10MB</div>
 
       <p class="hint b">这个投影让你想到什么？</p>
-      <textarea id="text1" maxlength="100"></textarea>
-      <div class="char-count"><span id="charNum1">0</span> / 100</div>
+      <textarea id="text1" maxlength="200"></textarea>
+      <div class="char-count"><span id="charNum1">0</span> / 200</div>
       <div class="prompt">在这些重叠的影像中，什么让你感到熟悉，什么又让你感到陌生？<br>例如：重叠的窗户让我想起小时候住过的房子。</div>
     </div>
 
@@ -629,8 +629,8 @@
       <div class="file-error" id="fileError2">单张图片不能超过 10MB</div>
 
       <p class="hint b">用一句话讲讲照片背后的故事</p>
-      <textarea id="text2" maxlength="100"></textarea>
-      <div class="char-count"><span id="charNum2">0</span> / 100</div>
+      <textarea id="text2" maxlength="200"></textarea>
+      <div class="char-count"><span id="charNum2">0</span> / 200</div>
       <div class="prompt">你记得什么？什么至今仍留在心中？为什么这张照片对你重要？<br>例如：外婆小时候经常会骑自行车带着我去吃豆腐花，那时小小的我就坐在这个铁框里，如今这辆自行车已经锈迹斑斑。</div>
     </div>
 
@@ -767,8 +767,8 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
       this.style.height = this.scrollHeight + 'px';
     });
   }
-  initCounter('text1', 'charNum1', 90);
-  initCounter('text2', 'charNum2', 90);
+  initCounter('text1', 'charNum1', 190);
+  initCounter('text2', 'charNum2', 190);
   initCounter('text3', 'charNum3', 190);
 
   /* ── 提交 ── */
